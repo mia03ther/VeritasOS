@@ -1,0 +1,14 @@
+{
+  "name": "@arbiter/subgraph",
+  "private": true,
+  "scripts": {
+    "codegen": "graph codegen subgraph.yaml",
+    "build": "graph build subgraph.yaml"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.93.0"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-ts": "^0.38.2"
+  }
+}

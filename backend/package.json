@@ -1,0 +1,22 @@
+{
+  "name": "@arbiter/backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "npm run build && mocha",
+    "prisma:generate": "set DATABASE_URL=file:./dev.db&& node ../node_modules/prisma/build/index.js generate",
+    "prisma:migrate": "set DATABASE_URL=file:./dev.db&& node ../node_modules/prisma/build/index.js migrate dev --name init",
+    "prisma:deploy": "set DATABASE_URL=file:./dev.db&& node ../node_modules/prisma/build/index.js migrate deploy"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "ethers": "^6.17.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.16.2"
+  }
+}

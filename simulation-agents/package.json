@@ -1,0 +1,10 @@
+{
+  "name": "@arbiter/simulation-agents",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "demo": "npm run build:deps && node --experimental-strip-types src/run-court-simulation.ts",
+    "build:deps": "npm run build --workspace=@arbiter/backend && npm run build --workspace=@arbiter/mcp-server"
+  }
+}

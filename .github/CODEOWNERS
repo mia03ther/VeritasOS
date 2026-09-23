@@ -1,0 +1,22 @@
+# MEMBER 1: Blockchain & Backend Engineer
+/blockchain/                  @Ali-Adel-Nour
+/subgraph/                    @Ali-Adel-Nour
+/backend/                     @Ali-Adel-Nour
+
+# ------------------------------------------------------------------------------
+# MEMBER 2: AI Engineer (AI Court Deliberation & Agent Protocol)
+# ------------------------------------------------------------------------------
+# The AI Judge core engine (overrides /backend/ ownership for the AI directory)
+/backend/src/ai-judge/        @MIA-Ether
+
+# Model Context Protocol (MCP) server for autonomous agents
+/mcp-server/                  @MIA-Ether
+
+# ------------------------------------------------------------------------------
+# MEMBER 3: Frontend & UX Engineer (The Cyber-Courtroom & Simulation)
+# ------------------------------------------------------------------------------
+# Cyber-Courtroom React/Vite dashboard, Web3 wallet connect, and deliberation UI
+/frontend/                    @starfury9
+
+# Autonomous agent simulation scripts and live hackathon demo runner
+/simulation-agents/           @starfury9
