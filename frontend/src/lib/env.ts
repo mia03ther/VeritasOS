@@ -93,6 +93,9 @@ const trimmedOrNull = (raw: string | undefined): string | null => {
  * | `usdcAddress`    | `NEXT_PUBLIC_USDC_ADDRESS`     | no approval can be built               |
  */
 export const env = {
+  get monadTestnet(): boolean {
+    return process.env.NEXT_PUBLIC_CHAIN === 'monad-testnet';
+  },
   /**
    * `NEXT_PUBLIC_API_BASE` — the backend origin, RAW AND UNTRIMMED.
    *
@@ -120,6 +123,7 @@ export const env = {
 
   /** `NEXT_PUBLIC_ARC_RPC_URL` — the JSON-RPC endpoint offered to the wallet. */
   get arcRpcUrl(): string | null {
+    if (this.monadTestnet) return trimmedOrNull(process.env.NEXT_PUBLIC_MONAD_RPC_URL);
     return trimmedOrNull(process.env.NEXT_PUBLIC_ARC_RPC_URL);
   },
 

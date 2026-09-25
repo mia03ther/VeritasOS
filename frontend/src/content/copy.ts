@@ -71,6 +71,7 @@ export interface RouteEntry {
 }
 
 export const ROUTES: readonly RouteEntry[] = [
+  { href: '/trust', label: 'Assess counterparty', summary: 'Nansen observations and a structured pre-transaction assessment.' },
   {
     href: '/',
     label: 'Docket',
@@ -1171,8 +1172,8 @@ export const WALLET = {
   switchChain: (name: string): string => `Switch to ${name}`,
 
   /** Requirement 12.7 — gas on this chain is USDC, and people assume ETH. */
-  gasNote: (name: string): string =>
-    `Gas on ${name} is paid in USDC, not ETH. A wallet with an ETH balance and no USDC cannot send these transactions.`,
+  gasNote: (name: string, symbol = 'USDC'): string =>
+    `Gas on ${name} is paid in ${symbol}. Escrow payments use the configured six-decimal ERC-20 token.`,
 
   busy: 'Waiting for your wallet.',
 } as const;

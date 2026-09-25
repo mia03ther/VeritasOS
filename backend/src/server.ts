@@ -1,3 +1,4 @@
+import "dotenv/config";
 import {
   createServer,
   type IncomingMessage,
@@ -13,19 +14,10 @@ import { getReputation } from "./reputation.js";
 import { markDealResolved } from "./persistence.js";
 import { readPersistedJudgment } from "./persistence.js";
 import { verifyVerdictHash } from "./ai-judge/verdict.js";
-import { startResilientOracle } from "./blockchain/eventListener.js";
-import { assessTrust, type TrustAssessmentInput } from "./trust-assessment.js";
-import { NansenAdapter, type NansenIntelligence } from "./nansen/adapter.js";
+import { runTrustAssessment } from "./trust-assessment.js";
+import { TrustError } from "./trust-errors.js";
 
 export const settlementGateway = { settleEscrow };
-
-// Nansen adapter — initialized once when API key is available
-let nansenAdapter: NansenAdapter | null = null;
-try {
-  nansenAdapter = new NansenAdapter();
-} catch {
-  // NANSEN_API_KEY not configured — trust assessment will use reputation-only
-}
 
 const PORT = Number(process.env.PORT ?? 3000);
 
@@ -363,66 +355,15 @@ export const server = createServer(
       try {
         const body = await readJsonBody(request);
 
-        if (typeof body !== "object" || body === null) {
-          sendJson(response, 400, {
-            success: false,
-            error: "Invalid input. Expected JSON body with walletAddress.",
-          });
-          return;
-        }
-
-        const input = body as Record<string, unknown>;
-        if (typeof input.walletAddress !== "string" || !input.walletAddress.trim()) {
-          sendJson(response, 400, {
-            success: false,
-            error: "walletAddress is required and must be a non-empty string.",
-          });
-          return;
-        }
-
-        const trustInput: TrustAssessmentInput = {
-          walletAddress: input.walletAddress.trim(),
-          taskContext:
-            typeof input.taskContext === "string" ? input.taskContext : undefined,
-          counterpartyRole:
-            typeof input.counterpartyRole === "string"
-              ? input.counterpartyRole
-              : undefined,
-        };
-
-        // Query Nansen intelligence (if configured)
-        let nansenIntelligence: NansenIntelligence | null = null;
-        if (nansenAdapter) {
-          try {
-            nansenIntelligence = await nansenAdapter.getIntelligence(
-              trustInput.walletAddress,
-            );
-          } catch {
-            // Nansen unavailable — proceed with reputation-only
-          }
-        }
-
-        // Query VeritasOS reputation (best-effort)
-        let reputation = null;
-        try {
-          reputation = await getReputation(trustInput.walletAddress);
-        } catch {
-          // No reputation — new agent
-        }
-
-        const assessment = await assessTrust(
-          trustInput,
-          nansenIntelligence,
-          reputation,
-        );
+        const assessment = await runTrustAssessment(body);
 
         sendJson(response, 200, { success: true, ...assessment });
       } catch (error) {
         const message =
           error instanceof Error ? error.message : "Unknown server error";
-        sendJson(response, isBadRequestError(error) ? 400 : 502, {
+        sendJson(response, error instanceof TrustError ? error.status : isBadRequestError(error) ? 400 : 500, {
           success: false,
-          error: `Trust assessment failed: ${message}`,
+          error: error instanceof TrustError || isBadRequestError(error) ? message : "Trust assessment failed",
         });
       }
 
@@ -545,6 +486,10 @@ if (process.env.ARBITRA_NO_LISTEN !== "true") {
     );
   });
 
-  // Start the background blockchain listener alongside the REST API
-  startResilientOracle().catch(console.error);
+  // Trust assessment and judge-only API do not require a signing key.
+  if (process.env.ARBITER_RPC_URL && process.env.ARBITER_ESCROW_ADDRESS && process.env.ARBITER_ORACLE_PRIVATE_KEY) {
+    void import("./blockchain/eventListener.js").then(({ startResilientOracle }) => startResilientOracle()).catch(console.error);
+  } else {
+    console.log("Escrow listener disabled: chain configuration is incomplete.");
+  }
 }
