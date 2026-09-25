@@ -18,6 +18,7 @@
     "dev:backend": "npm run dev --workspace=@arbiter/backend",
     "dev:frontend": "npm run dev --workspace=@arbiter/frontend",
     "dev:mcp": "npm run dev --workspace=@arbiter/mcp-server",
-    "demo": "npm run demo --workspace=@arbiter/simulation-agents"
+    "demo": "npm run demo --workspace=@arbiter/simulation-agents",
+    "smoke:trust": "node simulation-agents/src/run-trust-smoke.mjs"
   }
 }

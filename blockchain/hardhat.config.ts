@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import hardhatToolboxMochaEthersPlugin from "@nomicfoundation/hardhat-toolbox-mocha-ethers";
-import { defineConfig } from "hardhat/config";
+import { defineConfig, configVariable } from "hardhat/config";
 
 export default defineConfig({
   plugins: [hardhatToolboxMochaEthersPlugin],
@@ -23,6 +23,13 @@ export default defineConfig({
     },
   },
   networks: {
+    monadTestnet: {
+      type: "http",
+      chainType: "l1",
+      chainId: 10143,
+      url: configVariable("MONAD_RPC_URL"),
+      accounts: [configVariable("MONAD_PRIVATE_KEY")],
+    },
     hardhatMainnet: {
       type: "edr-simulated",
       chainType: "l1",
@@ -36,7 +43,7 @@ export default defineConfig({
       chainType: "l1",
       url: "https://rpc.testnet.arc.network",
       chainId: 5042002,
-      accounts: [process.env.ARC_PRIVATE_KEY || "0x0000000000000000000000000000000000000000000000000000000000000000"],
+      accounts: process.env.ARC_PRIVATE_KEY ? [process.env.ARC_PRIVATE_KEY] : [],
     }
   },
 });

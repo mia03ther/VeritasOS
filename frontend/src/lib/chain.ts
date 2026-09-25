@@ -68,7 +68,7 @@ const compact = (values: readonly (string | null)[]): string[] =>
  * Gas on this chain is denominated in USDC as the native token, not ETH
  * (Requirement 12.7). Any copy telling a reader to acquire gas names USDC.
  */
-export const ARC_TESTNET = {
+const LEGACY_ARC_TESTNET = {
   chainId: 5042002,
 
   /**
@@ -102,6 +102,17 @@ export const ARC_TESTNET = {
    */
   nativeCurrency: { name: 'USD Coin', symbol: 'USDC', decimals: 18 },
 } as const;
+
+export const MONAD_TESTNET = {
+  chainId: 10143,
+  chainIdHex: '0x279f',
+  name: 'Monad Testnet',
+  nativeCurrency: { name: 'Monad', symbol: 'MON', decimals: 18 },
+} as const;
+
+// Compatibility export: existing wallet/write consumers keep their API while
+// deployments can opt into Monad. Arc remains the default for existing users.
+export const ARC_TESTNET = env.monadTestnet ? MONAD_TESTNET : LEGACY_ARC_TESTNET;
 
 /**
  * DECIMALS, PART TWO OF TWO. The ERC-20 amount scale, deliberately separate.

@@ -72,6 +72,9 @@ export const INTERNAL_KEY_VARIABLE = 'ARBITRA_INTERNAL_KEY';
  * as missing, and the error a reviewer sees would name the wrong problem.
  */
 export const serverEnv = {
+  get trustBackendUrl(): string | null {
+    return process.env.ARBITRA_BACKEND_URL?.trim() || null;
+  },
   get internalKey(): string | null {
     const value = process.env[INTERNAL_KEY_VARIABLE]?.trim();
     return value ? value : null;

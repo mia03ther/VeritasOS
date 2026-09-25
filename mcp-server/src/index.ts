@@ -92,10 +92,10 @@ const TOOLS = [
     name: "assess_agent_risk",
     description:
       "Assess a counterparty agent's trustworthiness BEFORE hiring (PRE-TRANSACTION). " +
-      "Combines Nansen onchain wallet intelligence (entity recognition, account age, activity, portfolio) " +
+      "Combines bounded Nansen balance and transaction observations " +
       "with VeritasOS deal-history reputation and returns a decisive HIRE / DO_NOT_HIRE recommendation " +
       "with risk level, top trust signals, risk factors, data sources, and an auditable verdictHash. " +
-      "Requires the VeritasOS backend with NANSEN_API_KEY configured; reputation-only fallback applies when Nansen is unavailable.",
+      "Requires a configured VeritasOS backend. Provider failures are errors; offline modes explicitly report mock data and mock model metadata.",
     inputSchema: {
       type: "object",
       properties: {
@@ -229,9 +229,8 @@ async function handle(message: { id?: unknown; method?: string; params?: Record<
       toolError(message.id ?? null, "walletAddress is required and must be an EVM address");
       return;
     }
-    const taskContext = typeof args.taskContext === "string" && args.taskContext.trim() ? args.taskContext : undefined;
-    const counterpartyRole =
-      typeof args.counterpartyRole === "string" && args.counterpartyRole.trim() ? args.counterpartyRole : undefined;
+    const taskContext = args.taskContext as string | undefined;
+    const counterpartyRole = args.counterpartyRole as string | undefined;
     try {
       const data = await assessAgentRisk(backendUrl, { walletAddress: wallet, taskContext, counterpartyRole });
       toolResult(message.id, data);

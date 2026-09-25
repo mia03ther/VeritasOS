@@ -61,12 +61,12 @@ function mintDealId(): string {
 
 type FieldName = 'seller' | 'amount' | 'criteria' | 'duration';
 
-export function CreateDeal() {
+export function CreateDeal({ initialSeller = '' }: { initialSeller?: string }) {
   const wallet = useWallet();
   const tx = useSendTransaction();
 
   const [dealId] = useState(mintDealId);
-  const [seller, setSeller] = useState('');
+  const [seller, setSeller] = useState(initialSeller);
   const [amount, setAmount] = useState('');
   const [criteriaText, setCriteriaText] = useState('');
   const [duration, setDuration] = useState('604800');

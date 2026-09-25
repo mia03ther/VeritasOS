@@ -90,7 +90,7 @@ export function WalletPanel({ wallet }: { wallet: WalletState }) {
         ) : null}
 
         {/* Before a transaction is attempted, not after one fails. */}
-        <p className="text-meta text-muted max-w-[68ch]">{WALLET.gasNote(ARC_TESTNET.name)}</p>
+        <p className="text-meta text-muted max-w-[68ch]">{WALLET.gasNote(ARC_TESTNET.name, ARC_TESTNET.nativeCurrency.symbol)}</p>
 
         {busy ? (
           <p aria-live="polite" className="text-meta text-muted">

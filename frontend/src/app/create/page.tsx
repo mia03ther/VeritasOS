@@ -14,6 +14,8 @@ export const metadata: Metadata = {
   title: `${CREATE.heading} — ${SITE.name}`,
 };
 
-export default function CreatePage() {
-  return <CreateDeal />;
+export default async function CreatePage({ searchParams }: { searchParams: Promise<{ seller?: string }> }) {
+  const { seller } = await searchParams;
+  const initialSeller = typeof seller === 'string' && /^0x[0-9a-fA-F]{40}$/.test(seller) ? seller : '';
+  return <CreateDeal initialSeller={initialSeller} />;
 }

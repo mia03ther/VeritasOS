@@ -228,7 +228,7 @@ export function useWallet(): WalletState {
       const endpoints = rpcUrls();
       if (endpoints.length === 0) {
         setProblem(
-          `This deployment has no RPC endpoint configured, so ${ARC_TESTNET.name} cannot be added to your wallet. Set NEXT_PUBLIC_ARC_RPC_URL. A guessed endpoint would register a chain whose every call fails.`,
+          `This deployment has no RPC endpoint configured, so ${ARC_TESTNET.name} cannot be added to your wallet. Configure NEXT_PUBLIC_MONAD_RPC_URL for Monad or NEXT_PUBLIC_ARC_RPC_URL for Arc.`,
         );
         setBusy(false);
         return;
